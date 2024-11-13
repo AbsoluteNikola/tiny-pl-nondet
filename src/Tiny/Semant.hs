@@ -14,9 +14,12 @@ import Control.Monad (join)
 import Data.Bool (bool)
 
 newtype State = State { unState :: Map.Map Text Int }
-  deriving (Eq, Ord)
+  deriving (Eq, Ord, Show)
 
 type States = Set.Set State
+
+defaultStates :: States
+defaultStates = Set.singleton (State Map.empty)
 
 type Result' a = Either String a
 type Result = Result' States
@@ -98,7 +101,8 @@ transStatement states x = case x of
     transStatement states1 statement2
   Union statement1 statement2 -> do
     states1 <- transStatement states statement1
-    transStatement states1 statement2
+    states2 <- transStatement states statement2
+    pure $ Set.union states1 states2
   Closure statement -> do
     newStates <- transStatement states statement
     if newStates == states

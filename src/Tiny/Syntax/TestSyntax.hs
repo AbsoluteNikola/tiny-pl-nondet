@@ -53,8 +53,10 @@ run v p s =
 
 showTree :: (Show a, Print a) => Int -> a -> IO ()
 showTree v tree = do
-  putStrV v $ "\n[Abstract Syntax]\n\n" ++ show tree
-  putStrV v $ "\n[Linearized tree]\n\n" ++ printTree tree
+  -- putStrV v $ "\n[Abstract Syntax]\n\n" ++ show tree
+  -- putStrV v $ "\n[Linearized tree]\n\n" ++ printTree tree
+  putStrLn "\n[Possible states]"
+  
 
 usage :: IO ()
 usage = do
@@ -74,4 +76,3 @@ main = do
     []         -> getContents >>= run 2 pStatement
     "-s":fs    -> mapM_ (runFile 0 pStatement) fs
     fs         -> mapM_ (runFile 2 pStatement) fs
-

@@ -24,18 +24,25 @@ executable tiny-pl-nondet
     build-depends:
         base ^>=4.16.4.0
       , tiny-pl-nondet
+      , text
     hs-source-dirs:   app
     default-language: GHC2021
 
 library
     import:           warnings
-    other-modules:
+    exposed-modules:
         Tiny.Syntax.AbsSyntax
         Tiny.Syntax.PrintSyntax
+        Tiny.Syntax.LexSyntax
+        Tiny.Syntax.ParSyntax
         Tiny.Semant
     -- other-extensions:
+    build-tool-depends:
+        alex:alex,
+        happy:happy
     build-depends:
         base ^>=4.16.4.0
+      , array
       , text
       , containers
 
