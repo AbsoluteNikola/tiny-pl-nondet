@@ -1,0 +1,36 @@
+comment "//" ;
+comment "/*" "*/" ;
+
+token VarIdent lower (letter | digit | '_')* ;
+
+ExprVar.   Expr ::= VarIdent ;
+ExprConst. Expr ::= Integer ;
+ExprOp.    Expr ::= "(" Expr IntOp Expr ")";
+
+Plus.     IntOp ::= "+";
+Minus.    IntOp ::= "-";
+Multiply. IntOp ::= "*";
+Div.      IntOp ::= "/";
+Mod.      IntOp ::= "%";
+
+Eq.    IntCondOp ::= "=";
+NotEq. IntCondOp ::= "/=";
+Gt.    IntCondOp ::= ">";
+GtEq.  IntCondOp ::= ">=";
+Lt.    IntCondOp ::= "<";
+LtEq.  IntCondOp ::= "<=";
+
+Or.  BoolCondOp ::= "||";
+And. BoolCondOp ::= "&&";
+
+IntCond.  Cond  ::= "(" Expr IntCondOp Expr ")";
+BoolCond. Cond ::= "(" Cond BoolCondOp Cond ")";
+NotCond.  Cond  ::= "(" "!" Cond ")";
+
+Assign.      Statement ::= VarIdent ":=" Expr;
+Test.        Statement ::= Cond "?";
+Composition. Statement ::= "(" Statement ";" Statement ")";
+Union.       Statement ::= "(" Statement "U" Statement ")";
+Closure.     Statement ::= "(" Statement "*" ")";
+
+entrypoints Statement;
