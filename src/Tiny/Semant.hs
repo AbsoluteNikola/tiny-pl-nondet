@@ -6,29 +6,42 @@ module Tiny.Semant where
 import Tiny.Syntax.AbsSyntax
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
-import Data.Text (Text, unpack)
+import Data.Text (Text, pack, intercalate)
+import qualified Data.Text.IO as TIO
 import Prelude hiding (fail)
 import GHC.Num (integerToInt)
 import Data.Traversable (for)
-import Control.Monad (join)
+import Control.Monad (join, when)
 import Data.Bool (bool)
+import Data.Foldable (for_)
 
 newtype State = State { unState :: Map.Map Text Int }
   deriving (Eq, Ord, Show)
 
 type States = Set.Set State
 
+printStates :: States -> IO ()
+printStates states = do
+  when (Set.null states) $
+    TIO.putStrLn "No possible states"
+  for_ (zip [(1:: Int)..] (Set.toList states)) $ \(ix, State s) -> do
+    let
+      vars = map (\(name, value) -> name <> " = " <> (pack . show $ value))
+        $ Map.toList s
+      resultToPrint = (pack . show $ ix) <> ": " <> intercalate ", " vars
+    TIO.putStrLn resultToPrint
+
 defaultStates :: States
 defaultStates = Set.singleton (State Map.empty)
 
-type Result' a = Either String a
+type Result' a = Either Text a
 type Result = Result' States
 
 failureCase :: Show a => a -> Result' b
-failureCase x = Left $ "Undefined case: " ++ show x
+failureCase x = Left $ "Undefined case: " <> pack (show x)
 
 fail :: Text -> Result' a
-fail x = Left $ unpack x
+fail = Left
 
 setVarInState :: State -> VarIdent -> Int -> State
 setVarInState (State vars) (VarIdent varName) value =
