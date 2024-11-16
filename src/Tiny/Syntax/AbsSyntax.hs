@@ -38,7 +38,7 @@ data Cond
 data Statement
     = Assign VarIdent Expr
     | Test Cond
-    | Composition Statement Statement
+    | Composition [Statement]
     | Union Statement Statement
     | Closure Statement
   deriving (C.Eq, C.Ord, C.Show, C.Read, C.Data, C.Typeable, C.Generic)

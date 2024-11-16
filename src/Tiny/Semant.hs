@@ -65,7 +65,7 @@ transIntOp :: IntOp -> Int -> Int -> Int
 transIntOp x = case x of
   Plus -> (+)
   Minus -> (-)
-  Multiply -> (+)
+  Multiply -> (*)
   Div -> div
   Mod -> mod
 
@@ -109,15 +109,21 @@ transStatement states x = case x of
   Test cond -> traverseStates states $ \s -> do
     isOk <- transCond s cond
     pure $ bool [] [s] isOk
-  Composition statement1 statement2 -> do
-    states1 <- transStatement states statement1
-    transStatement states1 statement2
+  Composition statements -> do
+    let
+      go [] states' = pure states'
+      go (s:xs) states' = transStatement states' s >>= go xs
+    go statements states
   Union statement1 statement2 -> do
     states1 <- transStatement states statement1
     states2 <- transStatement states statement2
     pure $ Set.union states1 states2
   Closure statement -> do
     newStates <- transStatement states statement
-    if newStates == states
-      then pure newStates
-      else transStatement (Set.union newStates states) statement
+    -- traceM $ show states
+    -- traceM $ show newStates
+    -- traceM $ show (newStates == states)
+    -- traceM $ "=========="
+    if Set.union newStates states == states
+      then pure states
+      else transStatement (Set.union newStates states) (Closure statement)

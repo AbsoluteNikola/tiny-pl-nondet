@@ -89,13 +89,18 @@ Cond
   | '(' Cond BoolCondOp Cond ')' { Tiny.Syntax.AbsSyntax.BoolCond $2 $3 $4 }
   | '(' '!' Cond ')' { Tiny.Syntax.AbsSyntax.NotCond $3 }
 
+ListStatement :: { [Tiny.Syntax.AbsSyntax.Statement] }
+ListStatement
+  : Statement { (:[]) $1 }
+  | Statement ';' ListStatement { (:) $1 $3 }
+
 Statement :: { Tiny.Syntax.AbsSyntax.Statement }
 Statement
   : VarIdent ':=' Expr { Tiny.Syntax.AbsSyntax.Assign $1 $3 }
   | Cond '?' { Tiny.Syntax.AbsSyntax.Test $1 }
-  | '(' Statement ';' Statement ')' { Tiny.Syntax.AbsSyntax.Composition $2 $4 }
+  | '(' ListStatement ')' { Tiny.Syntax.AbsSyntax.Composition $2 }
   | '(' Statement 'U' Statement ')' { Tiny.Syntax.AbsSyntax.Union $2 $4 }
-  | '(' Statement '*' ')' { Tiny.Syntax.AbsSyntax.Closure $2 }
+  | Statement '*' { Tiny.Syntax.AbsSyntax.Closure $1 }
 
 {
 

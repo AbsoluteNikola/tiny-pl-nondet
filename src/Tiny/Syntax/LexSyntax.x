@@ -29,7 +29,7 @@ $u = [. \n]          -- universal: any character
 
 -- Symbols and non-identifier-like reserved words
 
-@rsyms = \( | \) | \+ | \- | \* | \/ | \% | \= | \/ \= | \> | \> \= | \< | \< \= | \| \| | \& \& | \! | \: \= | \? | \;
+@rsyms = \( | \) | \+ | \- | \* | \/ | \% | \= | \/ \= | \> | \> \= | \< | \< \= | \| \| | \& \& | \! | \; | \: \= | \?
 
 :-
 
@@ -47,7 +47,7 @@ $white+ ;
     { tok (eitherResIdent TV) }
 
 -- token VarIdent
-$s (\_ | ($d | $l)) *
+$l (\_ | ($d | $l)) *
     { tok (eitherResIdent T_VarIdent) }
 
 -- Keywords and Ident

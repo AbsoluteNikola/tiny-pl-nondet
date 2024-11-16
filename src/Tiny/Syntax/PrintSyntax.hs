@@ -174,10 +174,15 @@ instance Print Tiny.Syntax.AbsSyntax.Cond where
     Tiny.Syntax.AbsSyntax.BoolCond cond1 boolcondop cond2 -> prPrec i 0 (concatD [doc (showString "("), prt 0 cond1, prt 0 boolcondop, prt 0 cond2, doc (showString ")")])
     Tiny.Syntax.AbsSyntax.NotCond cond -> prPrec i 0 (concatD [doc (showString "("), doc (showString "!"), prt 0 cond, doc (showString ")")])
 
+instance Print [Tiny.Syntax.AbsSyntax.Statement] where
+  prt _ [] = concatD []
+  prt _ [x] = concatD [prt 0 x]
+  prt _ (x:xs) = concatD [prt 0 x, doc (showString ";"), prt 0 xs]
+
 instance Print Tiny.Syntax.AbsSyntax.Statement where
   prt i = \case
     Tiny.Syntax.AbsSyntax.Assign varident expr -> prPrec i 0 (concatD [prt 0 varident, doc (showString ":="), prt 0 expr])
     Tiny.Syntax.AbsSyntax.Test cond -> prPrec i 0 (concatD [prt 0 cond, doc (showString "?")])
-    Tiny.Syntax.AbsSyntax.Composition statement1 statement2 -> prPrec i 0 (concatD [doc (showString "("), prt 0 statement1, doc (showString ";"), prt 0 statement2, doc (showString ")")])
+    Tiny.Syntax.AbsSyntax.Composition statements -> prPrec i 0 (concatD [doc (showString "("), prt 0 statements, doc (showString ")")])
     Tiny.Syntax.AbsSyntax.Union statement1 statement2 -> prPrec i 0 (concatD [doc (showString "("), prt 0 statement1, doc (showString "U"), prt 0 statement2, doc (showString ")")])
-    Tiny.Syntax.AbsSyntax.Closure statement -> prPrec i 0 (concatD [doc (showString "("), prt 0 statement, doc (showString "*"), doc (showString ")")])
+    Tiny.Syntax.AbsSyntax.Closure statement -> prPrec i 0 (concatD [prt 0 statement, doc (showString "*")])

@@ -57,6 +57,6 @@ transStatement :: Tiny.Syntax.AbsSyntax.Statement -> Result
 transStatement x = case x of
   Tiny.Syntax.AbsSyntax.Assign varident expr -> failure x
   Tiny.Syntax.AbsSyntax.Test cond -> failure x
-  Tiny.Syntax.AbsSyntax.Composition statement1 statement2 -> failure x
+  Tiny.Syntax.AbsSyntax.Composition statements -> failure x
   Tiny.Syntax.AbsSyntax.Union statement1 statement2 -> failure x
   Tiny.Syntax.AbsSyntax.Closure statement -> failure x

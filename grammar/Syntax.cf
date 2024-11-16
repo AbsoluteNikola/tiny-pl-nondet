@@ -1,7 +1,7 @@
 comment "//" ;
 comment "/*" "*/" ;
 
-token VarIdent lower (letter | digit | '_')* ;
+token VarIdent letter (letter | digit | '_')* ;
 
 ExprVar.   Expr ::= VarIdent ;
 ExprConst. Expr ::= Integer ;
@@ -27,10 +27,12 @@ IntCond.  Cond  ::= "(" Expr IntCondOp Expr ")";
 BoolCond. Cond ::= "(" Cond BoolCondOp Cond ")";
 NotCond.  Cond  ::= "(" "!" Cond ")";
 
+separator nonempty Statement ";";
+
 Assign.      Statement ::= VarIdent ":=" Expr;
 Test.        Statement ::= Cond "?";
-Composition. Statement ::= "(" Statement ";" Statement ")";
+Composition. Statement ::= "(" [Statement] ")";
 Union.       Statement ::= "(" Statement "U" Statement ")";
-Closure.     Statement ::= "(" Statement "*" ")";
+Closure.     Statement ::= Statement "*";
 
 entrypoints Statement;
